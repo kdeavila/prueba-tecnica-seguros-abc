@@ -2,27 +2,31 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SegurosApi.DTOs;
 
-public class AseguradoUpdateDto
+public class InsuredCreateDto
 {
+  [Required(ErrorMessage = "El número de identificación es requerido")]
+  [Range(1, long.MaxValue, ErrorMessage = "El número de identificación debe ser un valor positivo")]
+  public long IdentificationNumber { get; set; }
+
   [Required(ErrorMessage = "El primer nombre es requerido")]
   [StringLength(50, ErrorMessage = "El primer nombre no puede exceder 50 caracteres")]
-  public string PrimerNombre { get; set; } = string.Empty;
+  public string FirstName { get; set; } = string.Empty;
 
   [StringLength(50, ErrorMessage = "El segundo nombre no puede exceder 50 caracteres")]
-  public string? SegundoNombre { get; set; }
+  public string? MiddleName { get; set; }
 
   [Required(ErrorMessage = "El primer apellido es requerido")]
   [StringLength(50, ErrorMessage = "El primer apellido no puede exceder 50 caracteres")]
-  public string PrimerApellido { get; set; } = string.Empty;
+  public string FirstLastName { get; set; } = string.Empty;
 
   [Required(ErrorMessage = "El segundo apellido es requerido")]
   [StringLength(50, ErrorMessage = "El segundo apellido no puede exceder 50 caracteres")]
-  public string SegundoApellido { get; set; } = string.Empty;
+  public string SecondLastName { get; set; } = string.Empty;
 
   [Required(ErrorMessage = "El teléfono es requerido")]
   [Phone(ErrorMessage = "El formato del teléfono no es válido")]
   [StringLength(20, ErrorMessage = "El teléfono no puede exceder 20 caracteres")]
-  public string TelefonoContacto { get; set; } = string.Empty;
+  public string PhoneNumber { get; set; } = string.Empty;
 
   [Required(ErrorMessage = "El email es requerido")]
   [EmailAddress(ErrorMessage = "El formato del email no es válido")]
@@ -30,12 +34,12 @@ public class AseguradoUpdateDto
   public string Email { get; set; } = string.Empty;
 
   [Required(ErrorMessage = "La fecha de nacimiento es requerida")]
-  public DateTime FechaNacimiento { get; set; }
+  public DateOnly BirthDate { get; set; }
 
   [Required(ErrorMessage = "El valor estimado del seguro es requerido")]
   [Range(0.01, double.MaxValue, ErrorMessage = "El valor del seguro debe ser mayor a 0")]
-  public decimal ValorEstimadoSeguro { get; set; }
+  public decimal EstimatedInsuranceValue { get; set; }
 
   [StringLength(500, ErrorMessage = "Las observaciones no pueden exceder 500 caracteres")]
-  public string? Observaciones { get; set; }
+  public string? Notes { get; set; }
 }
