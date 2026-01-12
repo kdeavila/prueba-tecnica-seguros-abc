@@ -18,6 +18,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/insureds/insured-form/insured-form.component').then(m => m.InsuredFormComponent)
   },
   {
+    path: 'asegurados/:id',
+    loadComponent: () => import('./features/insureds/insured-detail/insured-detail.component').then(m => m.InsuredDetailComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
