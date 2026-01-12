@@ -23,8 +23,8 @@ export class InsuredService {
     return this.http.get<Insured>(`${this.apiUrl}/${id}`);
   }
 
-  searchByIdentification(identificationNumber: number): Observable<Insured[]> {
-    return this.http.get<Insured[]>(`${this.apiUrl}/search/${identificationNumber}`);
+  searchByIdentification(searchTerm: string): Observable<Insured[]> {
+    return this.http.get<Insured[]>(`${this.apiUrl}/search/${searchTerm}`);
   }
 
   create(insured: InsuredCreate): Observable<Insured> {
