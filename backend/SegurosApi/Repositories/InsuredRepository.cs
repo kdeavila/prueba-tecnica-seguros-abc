@@ -35,10 +35,10 @@ public class InsuredRepository : IInsuredRepository
         .FirstOrDefaultAsync(i => i.IdentificationNumber == identificationNumber);
   }
 
-  public async Task<IEnumerable<Insured>> SearchByIdentificationAsync(long identificationNumber)
+  public async Task<IEnumerable<Insured>> SearchByIdentificationAsync(string searchTerm)
   {
     return await _context.Insureds
-        .Where(i => i.IdentificationNumber == identificationNumber)
+        .Where(i => i.IdentificationNumber.ToString().Contains(searchTerm))
         .AsNoTracking()
         .ToListAsync();
   }

@@ -42,11 +42,11 @@ public class InsuredsController(IInsuredService service) : ControllerBase
     return Ok(insured);
   }
 
-  [HttpGet("search/{identificationNumber}")]
+  [HttpGet("search/{searchTerm}")]
   [ProducesResponseType(StatusCodes.Status200OK)]
-  public async Task<ActionResult<IEnumerable<InsuredResponseDto>>> SearchByIdentification(long identificationNumber)
+  public async Task<ActionResult<IEnumerable<InsuredResponseDto>>> SearchByIdentification(string searchTerm)
   {
-    var insureds = await _service.SearchByIdentificationAsync(identificationNumber);
+    var insureds = await _service.SearchByIdentificationAsync(searchTerm);
     return Ok(insureds);
   }
 

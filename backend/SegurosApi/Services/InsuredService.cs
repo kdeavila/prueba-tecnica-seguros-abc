@@ -30,9 +30,9 @@ public class InsuredService(IInsuredRepository repository) : IInsuredService
     return insured?.Adapt<InsuredResponseDto>();
   }
 
-  public async Task<IEnumerable<InsuredResponseDto>> SearchByIdentificationAsync(long identificationNumber)
+  public async Task<IEnumerable<InsuredResponseDto>> SearchByIdentificationAsync(string searchTerm)
   {
-    var insureds = await _repository.SearchByIdentificationAsync(identificationNumber);
+    var insureds = await _repository.SearchByIdentificationAsync(searchTerm);
     return insureds.Adapt<IEnumerable<InsuredResponseDto>>();
   }
 
