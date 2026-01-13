@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.seguros-abc.com/api'
+  apiUrl: 'https://prueba-tecnica-seguros-abc-production.up.railway.app/api'
 };
