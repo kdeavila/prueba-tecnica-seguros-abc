@@ -1,0 +1,114 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="bg-white border border-gray-200 p-6 mb-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <app-page-header
+        title="Gestión de Asegurados"
+        subtitle="Administra la información de todos los asegurados">
+      </app-page-header>
+
+      <app-search-box
+        [(searchTerm)]="searchTerm"
+        placeholder="Buscar por número de identificación..."
+        [showClear]="isSearching()"
+        (onSearch)="search()"
+        (onClear)="clearSearch()">
+      </app-search-box>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <app-loading-spinner message="Cargando asegurados..."></app-loading-spinner>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="mb-6">
+      <app-alert type="error" [message]="error()!"></app-alert>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && insureds().length > 0) {
+    <div class="bg-white border border-gray-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="table-header-cell">Identificación</th>
+              <th class="table-header-cell">Nombre</th>
+              <th class="table-header-cell">Teléfono</th>
+              <th class="table-header-cell">Email</th>
+              <th class="table-header-cell">Valor Seguro</th>
+              <th class="table-header-cell text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            @for (insured of insureds(); track insured.identificationNumber) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm font-medium text-gray-900">{{ insured.identificationNumber }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm text-gray-900">{{ insured.firstName }} {{ insured.firstLastName }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm text-gray-600">{{ insured.phoneNumber }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm text-emerald-600">{{ insured.email }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="text-sm font-medium text-gray-900">{{ insured.estimatedInsuranceValue | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <app-action-buttons
+                    [viewLink]="['/asegurados', insured.identificationNumber.toString()]"
+                    [editLink]="['/asegurados', insured.identificationNumber.toString(), 'editar']"
+                    (onDelete)="confirmDelete(insured)">
+                  </app-action-buttons>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (!isSearching() && totalPages() > 1) {
+        <app-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="totalPages()"
+          [totalCount]="totalCount()"
+          (onPageChange)="goToPage($event)">
+        </app-pagination>
+      }
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading() && insureds().length === 0 && !error()) {
+    <app-empty-state
+      [title]="isSearching() ? 'No se encontraron resultados' : 'No hay asegurados registrados'"
+      [description]="isSearching() ? 'Intenta con otro número de identificación' : 'Comienza registrando tu primer asegurado'"
+      [showAction]="!isSearching()"
+      actionText="Registrar Asegurado"
+      actionLink="/asegurados/nuevo">
+    </app-empty-state>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteModal()) {
+    <app-confirm-modal
+      title="Eliminar asegurado"
+      subtitle="Esta acción no se puede deshacer"
+      confirmText="Eliminar"
+      loadingText="Eliminando..."
+      [loading]="deleting()"
+      (onCancel)="cancelDelete()"
+      (onConfirm)="deleteInsured()">
+      ¿Estás seguro de que deseas eliminar a <span class="font-semibold">{{ getFullName(insuredToDelete()!) }}</span>?
+    </app-confirm-modal>
+  }
+</div>

@@ -1,59 +1,57 @@
-# Seguros ABC - Sistema de Gestión de Asegurados
+# Seguros ABC
 
-Sistema para gestionar información de potenciales asegurados para SEGUROS ABC.
+Sistema de gestión de asegurados desarrollado como prueba técnica para **Atlantic QI**.
 
-## Tecnologías
+## Requisitos
 
-- **Backend**: .NET 10 con Entity Framework Core
-- **Frontend**: Angular 21
-- **Base de datos**: PostgreSQL
+Asegúrate de tener instalados:
 
-## Backend
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Node.js 18+](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
-### Requisitos
+## Configuración de la Base de Datos
 
-- .NET 10 SDK
-- PostgreSQL
+1. Crea una base de datos llamada `SegurosABC` en PostgreSQL
 
-### Configuración
-
-1. Clonar el repositorio
-2. Configurar la cadena de conexión en `appsettings.json`:
+2. Si tu configuración de PostgreSQL es diferente, edita el archivo `backend/SegurosApi/appsettings.json`:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=seguros_db;Username=tu_usuario;Password=tu_contraseña"
+    "DefaultConnection": "Host=localhost;Database=SegurosABC;Username=postgres;Password=postgres"
   }
 }
 ```
 
-3. Ejecutar las migraciones:
+## Ejecutar el Backend
 
 ```bash
 cd backend/SegurosApi
 dotnet ef database update
-```
-
-4. Iniciar la API:
-
-```bash
 dotnet run
 ```
 
-La API estará disponible en `https://localhost:7126`
+La API se ejecutará en `http://localhost:5000`
 
-### Endpoints
+Puedes ver la documentación de la API en: `http://localhost:5000/swagger`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | /api/insureds | Listar con paginación |
-| GET | /api/insureds/{id} | Obtener por ID |
-| GET | /api/insureds/search/{identificationNumber} | Buscar por identificación |
-| POST | /api/insureds | Crear asegurado |
-| PUT | /api/insureds/{id} | Actualizar asegurado |
-| DELETE | /api/insureds/{id} | Eliminar asegurado |
+## Ejecutar el Frontend
 
-## Frontend
+```bash
+cd frontend/SegurosApp
+npm install
+npm start
+```
 
-*Pendiente de implementación*
+La aplicación estará disponible en `http://localhost:4200`
+
+## Uso
+
+1. Inicia primero el backend
+2. Luego inicia el frontend
+3. Accede a `http://localhost:4200` en tu navegador
+
+---
+
+Desarrollado por **Keyner de Ávila**

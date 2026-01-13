@@ -1,0 +1,88 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Back Link -->
+  <app-back-link to="/asegurados" text="Volver a la lista"></app-back-link>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <app-loading-spinner message="Cargando información..."></app-loading-spinner>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <app-alert type="error" [message]="error()!"></app-alert>
+  }
+
+  <!-- Detail Card -->
+  @if (!loading() && insured()) {
+    <div class="bg-white border border-gray-200">
+      <!-- Header -->
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">{{ insured()!.firstName }} {{ insured()!.firstLastName }}</h1>
+            <p class="text-gray-500 mt-1">ID: {{ insured()!.identificationNumber }}</p>
+          </div>
+          <div class="flex gap-3">
+            <a [routerLink]="['/asegurados', insured()!.identificationNumber, 'editar']"
+               class="px-4 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 transition-colors font-medium">
+              Editar
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Información Personal -->
+          <div class="space-y-4">
+            <h2 class="section-title">Información Personal</h2>
+            
+            <div>
+              <p class="text-sm text-gray-500">Nombre Completo</p>
+              <p class="text-gray-900 font-medium">{{ getFullName() }}</p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500">Fecha de Nacimiento</p>
+              <p class="text-gray-900 font-medium">{{ insured()!.birthDate | date:'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+
+          <!-- Contacto -->
+          <div class="space-y-4">
+            <h2 class="section-title">Contacto</h2>
+            
+            <div>
+              <p class="text-sm text-gray-500">Teléfono</p>
+              <p class="text-gray-900 font-medium">{{ insured()!.phoneNumber }}</p>
+            </div>
+
+            <div>
+              <p class="text-sm text-gray-500">Email</p>
+              <p class="text-emerald-600 font-medium">{{ insured()!.email }}</p>
+            </div>
+          </div>
+
+          <!-- Seguro -->
+          <div class="space-y-4">
+            <h2 class="section-title">Información del Seguro</h2>
+            
+            <div>
+              <p class="text-sm text-gray-500">Valor Estimado</p>
+              <p class="text-gray-900 font-medium text-lg">{{ insured()!.estimatedInsuranceValue | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Observaciones -->
+        @if (insured()!.notes) {
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <h2 class="section-title mb-3">Observaciones</h2>
+            <p class="text-gray-700 whitespace-pre-wrap">{{ insured()!.notes }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
