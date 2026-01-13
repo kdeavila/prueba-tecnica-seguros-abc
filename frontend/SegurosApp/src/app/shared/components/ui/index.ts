@@ -1,4 +1,3 @@
-// UI Components barrel export
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 export { AlertComponent } from './alert/alert.component';
 export { EmptyStateComponent } from './empty-state/empty-state.component';
