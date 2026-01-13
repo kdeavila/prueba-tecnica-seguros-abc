@@ -1,0 +1,10 @@
+// UI Components barrel export
+export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+export { AlertComponent } from './alert/alert.component';
+export { EmptyStateComponent } from './empty-state/empty-state.component';
+export { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+export { PaginationComponent } from './pagination/pagination.component';
+export { BackLinkComponent } from './back-link/back-link.component';
+export { PageHeaderComponent } from './page-header/page-header.component';
+export { SearchBoxComponent } from './search-box/search-box.component';
+export { ActionButtonsComponent } from './action-buttons/action-buttons.component';
