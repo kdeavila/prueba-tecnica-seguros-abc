@@ -11,10 +11,22 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-// Database
-var connectionString = builder.Environment.IsProduction()
-  ? Environment.GetEnvironmentVariable("DATABASE_URL")
-  : builder.Configuration.GetConnectionString("DefaultConnection");
+// Database - Parse Railway DATABASE_URL or use local connection string
+string? connectionString;
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+  // Railway provides DATABASE_URL in URI format: postgresql://user:password@host:port/database
+  // Npgsql requires: Host=host;Port=port;Database=database;Username=user;Password=password
+  var uri = new Uri(databaseUrl);
+  var userInfo = uri.UserInfo.Split(':');
+  connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
+else
+{
+  connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -25,18 +37,29 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IInsuredRepository, InsuredRepository>();
 builder.Services.AddScoped<IInsuredService, InsuredService>();
 
-// CORS for Angular
+// CORS configuration
+var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',') 
+  ?? ["http://localhost:4200"];
+
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("AllowAngular", policy =>
+  options.AddPolicy("AllowedOrigins", policy =>
   {
-    policy.WithOrigins("http://localhost:4200")
+    policy.WithOrigins(allowedOrigins)
           .AllowAnyHeader()
           .AllowAnyMethod();
   });
 });
 
 var app = builder.Build();
+
+// Apply pending migrations automatically in production
+if (!app.Environment.IsDevelopment())
+{
+  using var scope = app.Services.CreateScope();
+  var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+  context.Database.Migrate();
+}
 
 // Seed database in development
 if (app.Environment.IsDevelopment())
@@ -47,19 +70,22 @@ if (app.Environment.IsDevelopment())
 }
 
 // Configure the HTTP request pipeline
+app.MapOpenApi();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// Don't force HTTPS in Railway (it handles SSL termination)
 if (app.Environment.IsDevelopment())
 {
-  app.MapOpenApi();
-  app.UseSwagger();
-  app.UseSwaggerUI();
+  app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
-
-app.UseCors("AllowAngular");
+app.UseCors("AllowedOrigins");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// Railway requires the app to listen on PORT environment variable
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Run($"http://0.0.0.0:{port}");
